@@ -7,34 +7,10 @@ export default Ember.Controller.extend({
 
 
   
-  actions: {
-    sectionChange() {
-      console.log("change")
-      this.set('model.section', 'dummy');
-      
-      this.set('model.companies', this.companies);
-    },
-  
-    testClick() {
-      console.log ( apiAi.isInitialise() );
-      apiAi.open();
-      console.log ( apiAi.isOpen() );
-    },
-        
+  actions: {    
     sendPhrase(){
       this.sendJson(this.query);
-    },
-    
-    testFunction(){
-      this.doSomething();
-      
     }
-  },
-  
-  
-  
-  doSomething: function(){
-    this.apiAi.open();
   },
   
   sendJson: function (text) {      
@@ -61,27 +37,21 @@ export default Ember.Controller.extend({
   },
   
   compareBy:function(compareFilter){
-    console.log (compareFilter )
     var result = {groups:[], companies:this.model.companies};
-    //category, country, city
     if( compareFilter){
       result.groups = _.uniq(_.map(this.model.companies, compareFilter)).sort();
       result.companies = _.groupBy(this.model.companies, compareFilter);
     }
-    
-    console.log ( result)
     return result;
   },
   
   updateSeries:function(){
-    console.log ( this.parameters.bcorp_group)
     var compareObj = this.compareBy(this.parameters.groupBy)
     var result = [];
     var segments = compareObj.groups;
     
     if ( segments.length > 0){
       segments.forEach (function(segment){
-        console.log ( segment);
         result.push({name:segment, data:this.getSegmentData( compareObj.companies[segment])})
       }.bind(this));
     }else{
@@ -169,10 +139,8 @@ export default Ember.Controller.extend({
     SERVER_VERSION = '20150910';
     
     var that = this;
-
     this.query = "By country";
     this.sessionId = ApiAi.generateRandomId();
-//    this.parameters = {};    
         
     var config = {
         server: SERVER_PROTO + '://' + SERVER_DOMAIN + ':' + SERVER_PORT + '/api/ws/query',
@@ -190,9 +158,6 @@ export default Ember.Controller.extend({
     
     this.apiAi.onEvent = function (code, data) {
         console.log("> ON EVENT", code, data);
-        if(data.type==='open' && data.returnValue){
-          console.log("something")
-        }
     };
     
     this.apiAi.onResults = function (data) {
@@ -203,7 +168,7 @@ export default Ember.Controller.extend({
             speech;
 
             if ( data.result.metadata.intentName=='display' && data.result.parameters){
-              console.log (data.result.parameters )
+              console.log (data.result.parameters );
               that.parameters.groupBy = data.result.parameters.bcorp_group;
               that.parameters.xAxis = data.result.parameters.bcorp_section;
               
@@ -211,16 +176,11 @@ export default Ember.Controller.extend({
             }
             
         if (!(status && (code = status.code) && isFinite(parseFloat(code)) && code < 300 && code > 199)) {
-            //dialogue.innerHTML = JSON.stringify(status);
-            
-
             return;
         }
 
     };
-    
-    this.apiAi.init();
-    
+    this.apiAi.init();    
     this.xAxis = 'community';
     
   }
