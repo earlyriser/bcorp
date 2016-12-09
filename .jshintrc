@@ -2,6 +2,9 @@
   "predef": [
     "document",
     "window",
+    "_",
+    "Highcharts",
+    "ApiAi",
     "-Promise"
   ],
   "browser": true,

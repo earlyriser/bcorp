@@ -30,7 +30,7 @@ export default Ember.Controller.extend({
     var result = [];
     
     _.each(data, function(company){
-      result.push([company.overall, company[this.xAxis]])
+      result.push([company.overall, company[this.xAxis]]);
     }.bind(this));
     
     return result;
@@ -46,26 +46,24 @@ export default Ember.Controller.extend({
   },
   
   updateSeries:function(){
-    var compareObj = this.compareBy(this.parameters.groupBy)
+    var compareObj = this.compareBy(this.parameters.groupBy);
     var result = [];
     var segments = compareObj.groups;
     
     if ( segments.length > 0){
       segments.forEach (function(segment){
-        result.push({name:segment, data:this.getSegmentData( compareObj.companies[segment])})
+        result.push({name:segment, data:this.getSegmentData( compareObj.companies[segment])});
       }.bind(this));
     }else{
-      result.push({name:'All', data:this.getSegmentData( compareObj.companies)})
+      result.push({name:'All', data:this.getSegmentData( compareObj.companies)});
     }
     
     return result;
   },
   
   initChart: function(){    
-    
-    var series = this.updateSeries()
+    var series = this.updateSeries();
     var xAxis = this.parameters.xAxis;
-    
     
     Highcharts.chart('container', {
          chart: {
@@ -164,10 +162,9 @@ export default Ember.Controller.extend({
         console.log("> ON RESULT", data);
 
         var status = data.status,
-            code,
-            speech;
+            code;
 
-            if ( data.result.metadata.intentName=='display' && data.result.parameters){
+            if ( data.result.metadata.intentName==='display' && data.result.parameters){
               console.log (data.result.parameters );
               that.parameters.groupBy = data.result.parameters.bcorp_group;
               that.parameters.xAxis = data.result.parameters.bcorp_section;
